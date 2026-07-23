@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copo Cheio — Educação Financeira Brewteco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --malt-black:#1B140F;
+    --barrel-brown:#2B2019;
+    --card:#332619;
+    --copper:#B5651D;
+    --amber:#E0A63A;
+    --foam:#F3E9D6;
+    --text:#E8DFCF;
+    --text-dim:#B7A98F;
+    --line: rgba(224,166,58,0.25);
+    --good:#7FA65A;
+    --bad:#C1544A;
+    --ggc-bordo:#4A0E14;
+    --ggc-gold:#D4AF37;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at top left, rgba(181,101,29,0.12), transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(224,166,58,0.08), transparent 55%),
+      var(--malt-black);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-size:.72rem;
+    color:var(--amber);
+  }
+  h1,h2,h3{font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.02em; margin:0; color:var(--foam);}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px;}
+
+  /* ---------- HERO / GAUGE ---------- */
+  .hero{padding:64px 0 40px; border-bottom:1px solid var(--line);}
+  .hero-grid{display:flex; gap:40px; align-items:center; flex-wrap:wrap;}
+  .hero-text{flex:1 1 380px;}
+  .hero h1{font-size:2.5rem; line-height:1.05; margin-bottom:14px;}
+  .hero h1 span{color:var(--amber);}
+  .hero p{color:var(--text-dim); max-width:46ch;}
+  .glass-wrap{flex:0 0 180px; display:flex; flex-direction:column; align-items:center; gap:10px;}
+  #glassFill{transition: y 0.8s ease, height 0.8s ease;}
+  .glass-label{font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--text-dim); text-align:center;}
+  .glass-label b{color:var(--amber); font-size:1rem;}
+
+  /* ---------- NAV DOTS ---------- */
+  .progress-track{
+    position:sticky; top:0; z-index:50;
+    background:rgba(27,20,15,0.92); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+    padding:10px 0;
+  }
+  .dots{display:flex; gap:8px; justify-content:center; flex-wrap:wrap;}
+  .dot{
+    font-family:'JetBrains Mono',monospace; font-size:.68rem;
+    padding:6px 12px; border-radius:20px; border:1px solid var(--line);
+    color:var(--text-dim); cursor:pointer; white-space:nowrap; transition:.2s;
+  }
+  .dot.active{background:var(--copper); color:var(--foam); border-color:var(--copper);}
+  .dot.done{color:var(--amber); border-color:var(--amber);}
+
+  /* ---------- MODULES ---------- */
+  section.module{padding:56px 0; border-bottom:1px solid var(--line);}
+  .mod-head{display:flex; align-items:baseline; gap:16px; margin-bottom:18px;}
+  .mod-num{font-family:'JetBrains Mono',monospace; color:var(--copper); font-size:1rem; font-weight:700;}
+  .mod-head h2{font-size:1.6rem;}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:22px 24px; margin:18px 0;
+  }
+  .tip{
+    border-left:3px solid var(--amber);
+    background: rgba(224,166,58,0.07);
+    padding:14px 18px; border-radius:0 8px 8px 0; margin-top:16px;
+  }
+  .tip .eyebrow{margin-bottom:4px; display:block;}
+  .help-box{
+    border-left:3px solid var(--good);
+    background: rgba(127,166,90,0.09);
+    padding:16px 18px; border-radius:0 8px 8px 0; margin-top:16px;
+  }
+  .help-box .eyebrow{margin-bottom:6px; display:block; color:var(--good);}
+  .help-box a{color:var(--good); font-weight:600;}
+  .help-box ul{margin:10px 0 0; padding-left:1.2em;}
+  .help-box li{margin-bottom:4px;}
+  ul.simple{padding-left:1.2em; margin:10px 0;}
+  ul.simple li{margin-bottom:6px;}
+  .mark-btn{
+    margin-top:20px; background:transparent; border:1px solid var(--amber); color:var(--amber);
+    font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:.05em;
+    padding:10px 18px; border-radius:6px; cursor:pointer; text-transform:uppercase;
+    transition:.2s;
+  }
+  .mark-btn:hover{background:var(--amber); color:var(--malt-black);}
+  .mark-btn.done{background:var(--amber); color:var(--malt-black); cursor:default;}
+
+  /* ---------- QUIZ ---------- */
+  .q-block{margin-bottom:26px; padding-bottom:22px; border-bottom:1px dashed var(--line);}
+  .q-block:last-child{border-bottom:none;}
+  .q-title{font-weight:600; color:var(--foam); margin-bottom:12px;}
+  .opt{
+    display:flex; align-items:center; gap:10px; padding:10px 14px; margin-bottom:8px;
+    border:1px solid var(--line); border-radius:8px; cursor:pointer; transition:.15s;
+  }
+  .opt:hover{border-color:var(--amber);}
+  .opt.selected{border-color:var(--amber); background:rgba(224,166,58,0.08);}
+  .opt.correct{border-color:var(--good); background:rgba(127,166,90,0.12);}
+  .opt.incorrect{border-color:var(--bad); background:rgba(193,84,74,0.12);}
+  .opt input{accent-color:var(--amber);}
+  #submitQuiz, #resetQuiz{
+    background:var(--copper); color:var(--foam); border:none; font-family:'JetBrains Mono',monospace;
+    text-transform:uppercase; letter-spacing:.05em; padding:14px 26px; border-radius:6px;
+    font-size:.85rem; cursor:pointer; margin-top:10px;
+  }
+  #resetQuiz{background:transparent; border:1px solid var(--text-dim); color:var(--text-dim); margin-left:10px;}
+  #quizResult{margin-top:20px; padding:18px; border-radius:8px; font-family:'JetBrains Mono',monospace;}
+  #quizResult.pass{background:rgba(127,166,90,0.15); border:1px solid var(--good); color:var(--good);}
+  #quizResult.fail{background:rgba(193,84,74,0.15); border:1px solid var(--bad); color:var(--bad);}
+
+  /* ---------- CERTIFICATE ---------- */
+  #certSection{display:none;}
+  .cert-form{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:28px;}
+  .cert-form input, .cert-form select{
+    flex:1 1 260px; background:var(--barrel-brown); border:1px solid var(--line); color:var(--foam);
+    padding:12px 14px; border-radius:6px; font-family:'Inter',sans-serif; font-size:1rem;
+  }
+  .cert-form button{
+    background:var(--ggc-gold); color:var(--ggc-bordo); border:none; font-family:'JetBrains Mono',monospace;
+    text-transform:uppercase; font-weight:700; letter-spacing:.05em; padding:13px 22px;
+    border-radius:6px; cursor:pointer;
+  }
+  #certificate{
+    display:none;
+    background:
+      radial-gradient(ellipse at top left, rgba(212,175,55,0.08), transparent 60%),
+      #FBF3E7;
+    border:3px solid var(--ggc-bordo);
+    border-radius:4px;
+    padding:56px 48px;
+    position:relative;
+    overflow:hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  }
+  #certificate::before{
+    content:"";
+    position:absolute; inset:10px;
+    border:1.5px solid var(--ggc-gold);
+    pointer-events:none;
+  }
+  .cert-eyebrow{font-family:'JetBrains Mono',monospace; letter-spacing:.25em; text-transform:uppercase; color:var(--ggc-bordo); font-size:.75rem; text-align:center;}
+  .cert-title{font-family:'Oswald',sans-serif; text-transform:uppercase; text-align:center; color:var(--ggc-bordo); font-size:2.1rem; margin:10px 0 4px;}
+  .cert-sub{text-align:center; color:#8A6A55; font-size:.85rem; margin-bottom:30px;}
+  .cert-name{
+    font-family:'Oswald',sans-serif; text-align:center; font-size:2.4rem; color:var(--ggc-bordo);
+    border-bottom:1px solid rgba(74,14,20,0.25); padding-bottom:18px; margin-bottom:18px; text-transform:none;
+  }
+  .cert-body{text-align:center; color:#3A2A22; max-width:56ch; margin:0 auto 26px;}
+  .cert-foot{display:flex; justify-content:space-between; align-items:flex-end; margin-top:36px; font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#8A6A55;}
+  .cert-seal{
+    width:64px; height:64px; border-radius:50%; border:2px solid var(--ggc-bordo); color:var(--ggc-bordo);
+    background: rgba(212,175,55,0.12);
+    display:flex; align-items:center; justify-content:center; font-family:'Oswald',sans-serif; font-size:.65rem;
+    text-transform:uppercase; text-align:center; line-height:1.1;
+  }
+  #downloadBtn{
+    margin-top:24px; background:transparent; border:1px solid var(--ggc-gold); color:var(--ggc-gold);
+    font-family:'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:.05em;
+    padding:12px 22px; border-radius:6px; cursor:pointer;
+  }
+  footer{padding:40px 0 70px; text-align:center; color:var(--text-dim); font-family:'JetBrains Mono',monospace; font-size:.75rem;}
+
+  /* ---------- FERRAMENTA INTERATIVA (sem Excel) ---------- */
+  #toolSection{display:none;}
+  .tool-intro{color:var(--text-dim); max-width:60ch;}
+  .row-cat{
+    display:grid; grid-template-columns: 1fr 96px 130px; gap:10px; align-items:center;
+    padding:8px 0; border-bottom:1px solid var(--line);
+  }
+  .row-cat .cat-name{font-size:.92rem;}
+  .badge{
+    font-family:'JetBrains Mono',monospace; font-size:.68rem; text-transform:uppercase;
+    padding:4px 8px; border-radius:20px; text-align:center; white-space:nowrap;
+  }
+  .badge.necessidade{background:rgba(181,101,29,0.2); color:var(--copper); border:1px solid var(--copper);}
+  .badge.desejo{background:rgba(224,166,58,0.15); color:var(--amber); border:1px solid var(--amber);}
+  .badge.reserva{background:rgba(212,175,55,0.15); color:var(--ggc-gold); border:1px solid var(--ggc-gold);}
+  .tool-input{
+    background:var(--barrel-brown); border:1px solid var(--line); color:var(--foam);
+    padding:8px 10px; border-radius:6px; font-family:'Inter',sans-serif; font-size:.9rem; width:100%;
+  }
+  .renda-row{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:18px;}
+  .renda-row label{font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--text-dim); text-transform:uppercase;}
+  .renda-row .tool-input{max-width:200px;}
+  .summary-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:14px; margin-top:18px;}
+  .summary-box{
+    background:var(--barrel-brown); border:1px solid var(--line); border-radius:8px; padding:14px;
+    text-align:center;
+  }
+  .summary-box .val{font-family:'Oswald',sans-serif; font-size:1.4rem; color:var(--foam);}
+  .summary-box .lbl{font-family:'JetBrains Mono',monospace; font-size:.65rem; color:var(--text-dim); text-transform:uppercase; margin-top:2px;}
+  .summary-box.ok .val{color:var(--good);}
+  .summary-box.over .val{color:var(--bad);}
+  .goal-card{
+    display:grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap:10px; align-items:end;
+    padding:14px 0; border-bottom:1px dashed var(--line);
+  }
+  .goal-card label{display:block; font-family:'JetBrains Mono',monospace; font-size:.62rem; color:var(--text-dim); text-transform:uppercase; margin-bottom:4px;}
+  .goal-result{
+    margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:.78rem; color:var(--amber);
+    grid-column:1/-1;
+  }
+  .tool-actions{display:flex; gap:14px; flex-wrap:wrap; margin-top:26px;}
+  .tool-btn{
+    font-family:'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:.05em;
+    padding:13px 22px; border-radius:6px; cursor:pointer; font-size:.8rem; border:none;
+  }
+  .tool-btn.primary{background:var(--amber); color:var(--malt-black);}
+  .tool-btn.secondary{background:transparent; border:1px solid var(--ggc-gold); color:var(--ggc-gold);}
+  @media(max-width:640px){
+    .row-cat{grid-template-columns: 1fr; gap:6px;}
+    .goal-card{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:600px){
+    .hero h1{font-size:1.9rem;}
+    #certificate{padding:34px 20px;}
+    .cert-name{font-size:1.7rem;}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-track">
+  <div class="wrap">
+    <div class="dots" id="dots"></div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <span class="eyebrow">Universidade Brewteco · GGC</span>
+      <h1>Copo Cheio: <span>educação financeira</span> sem complicação.</h1>
+      <p>Um curso rápido e direto para você organizar suas finanças com simplicidade — do jeito Brewteco de ser: verdadeiro, humano e sem enrolação. No final, tem avaliação e certificado.</p>
+    </div>
+    <div class="glass-wrap">
+      <svg width="120" height="150" viewBox="0 0 120 150">
+        <defs>
+          <clipPath id="glassClip">
+            <path d="M28 10 L92 10 L84 138 Q60 148 36 138 Z"/>
+          </clipPath>
+        </defs>
+        <path d="M28 10 L92 10 L84 138 Q60 148 36 138 Z" fill="none" stroke="var(--amber)" stroke-width="3"/>
+        <g clip-path="url(#glassClip)">
+          <rect id="glassFill" x="20" y="150" width="100" height="0" fill="var(--copper)"/>
+          <rect id="glassFoam" x="20" y="146" width="100" height="6" fill="var(--foam)" opacity="0.85"/>
+        </g>
+      </svg>
+      <div class="glass-label">SEU COPO DE<br>CONHECIMENTO<br><b id="glassPct">0%</b> cheio</div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section class="module" id="idGate">
+  <div class="mod-head"><h2>Antes de começar</h2></div>
+  <div class="card">
+    <p>Para gerar seu certificado ao final e para o registro de conclusão do curso, precisamos identificar você.</p>
+    <p style="font-size:.82rem; color:var(--text-dim);">Seu CPF é usado apenas para identificação interna do registro de treinamento — não aparece publicamente em nenhum lugar do curso.</p>
+    <div class="cert-form">
+      <input type="text" id="gateName" placeholder="Nome completo">
+      <input type="text" id="gateCPF" placeholder="CPF (só números)" maxlength="14" inputmode="numeric">
+      <select id="gateUnit">
+        <option value="">Selecione sua unidade</option>
+        <option>Gávea</option>
+        <option>Terraço</option>
+        <option>Tijuca</option>
+        <option>Rosas</option>
+        <option>Leblon</option>
+        <option>Laranjeiras</option>
+        <option>Morro da Urca</option>
+        <option>Cervejaria</option>
+        <option>Onze Copos Participações</option>
+      </select>
+      <button id="startCourseBtn">Começar o curso</button>
+    </div>
+  </div>
+</section>
+
+<div id="courseContent" style="display:none;">
+
+<section class="module" id="mod1" data-mod="1">
+  <div class="mod-head"><span class="mod-num">01</span><h2>Por que cuidar do seu dinheiro</h2></div>
+  <p>Educação financeira não é sobre ficar rico rápido. É sobre ter <b>tranquilidade</b>: saber quanto entra, quanto sai, e não passar o mês no aperto esperando o próximo pagamento.</p>
+  <div class="card">
+    <p>Pensa assim: um bar que não sabe quanto vende e quanto gasta, quebra. Com a sua vida financeira é igual. A boa notícia é que organizar isso é mais simples do que parece — e não depende de ganhar mais, depende de <b>saber para onde o dinheiro vai</b>.</p>
+    <ul class="simple">
+      <li>Menos ansiedade no fim do mês</li>
+      <li>Mais controle sobre suas escolhas</li>
+      <li>Espaço para realizar planos (uma viagem, um curso, uma reserva)</li>
+    </ul>
+    <div class="tip"><span class="eyebrow">Dica do mestre-cervejeiro</span>Assim como uma boa receita de chopp, finanças pedem processo: ingredientes certos (informação), tempo (constância) e paciência. Não existe atalho mágico.</div>
+  </div>
+  <button class="mark-btn" data-mark="1">Marcar módulo como concluído</button>
+</section>
+
+<section class="module" id="mod2" data-mod="2">
+  <div class="mod-head"><span class="mod-num">02</span><h2>Necessidade x Desejo</h2></div>
+  <p>Antes de qualquer compra, pergunte: <b>isso é necessidade ou desejo?</b> Os dois são válidos — mas confundir um com o outro é o que mais aperta o orçamento.</p>
+  <div class="card">
+    <ul class="simple">
+      <li><b>Necessidade:</b> moradia, alimentação, transporte para o trabalho, saúde, contas básicas.</li>
+      <li><b>Desejo:</b> roupa nova sem precisar, delivery no dia que tem comida em casa, upgrade de celular ainda funcionando.</li>
+    </ul>
+    <p>Desejo não é errado — o problema é comprá-lo <b>no crédito, sem planejar</b>, ou antes de garantir as necessidades do mês.</p>
+    <div class="tip"><span class="eyebrow">Na prática</span>Antes de comprar por impulso, espere 24 horas. Se depois desse tempo ainda fizer sentido e couber no seu orçamento, tudo bem realizar o desejo.</div>
+  </div>
+  <button class="mark-btn" data-mark="2">Marcar módulo como concluído</button>
+</section>
+
+<section class="module" id="mod3" data-mod="3">
+  <div class="mod-head"><span class="mod-num">03</span><h2>Organizando seu orçamento</h2></div>
+  <p>Orçamento é só uma palavra bonita para <b>anotar o que entra e o que sai</b>. Pode ser num caderno, no celular, do jeito que for mais fácil pra você — o importante é fazer.</p>
+  <div class="card">
+    <p>Uma forma simples de dividir o salário é a regra <b>50/30/20</b>:</p>
+    <ul class="simple">
+      <li><b>50%</b> para o essencial (contas fixas, alimentação, transporte)</li>
+      <li><b>30%</b> para o que você quer (lazer, desejos, extras)</li>
+      <li><b>20%</b> para reserva e objetivos (poupar, quitar dívida, investir)</li>
+    </ul>
+    <p>Se sobrar pouco pro essencial hoje, tudo bem começar com outra proporção — o importante é ter <b>as três categorias</b> e ir ajustando com o tempo.</p>
+    <div class="tip"><span class="eyebrow">Dica do mestre-cervejeiro</span>Separe as contas assim que o salário cair, do jeito que separamos o chopp da espuma: primeiro o essencial, depois o resto. O que fica pra depois, some fácil.</div>
+  </div>
+  <button class="mark-btn" data-mark="3">Marcar módulo como concluído</button>
+</section>
+
+<section class="module" id="mod4" data-mod="4">
+  <div class="mod-head"><span class="mod-num">04</span><h2>Juros e dívidas: a armadilha</h2></div>
+  <p>Juros são o "aluguel" que você paga por usar dinheiro que não é seu. Quanto mais tempo a dívida fica em aberto, mais ela cresce — e algumas formas de crédito são bem mais caras que outras.</p>
+  <div class="card">
+    <ul class="simple">
+      <li><b>Cartão de crédito rotativo e cheque especial:</b> os juros mais altos do mercado. Evite deixar a fatura ou o saldo negativo "rolando" de um mês pro outro.</li>
+      <li><b>Empréstimo consignado (desconto em folha):</b> costuma ter juros menores, mas <b>compromete seu salário todo mês</b>. Antes de contratar, calcule se a parcela ainda deixa espaço pras suas contas essenciais — e desconfie de mais de um consignado ao mesmo tempo.</li>
+      <li><b>Parcelamentos em geral:</b> pergunte sempre o valor total com juros, não só o valor da parcela.</li>
+    </ul>
+    <div class="tip"><span class="eyebrow">Sinal de alerta</span>Se você já usa um crédito novo pra pagar outro (cartão pra pagar cheque especial, por exemplo), é hora de parar e procurar ajuda de um especialista para reorganizar suas contas.</div>
+  </div>
+  <button class="mark-btn" data-mark="4">Marcar módulo como concluído</button>
+</section>
+
+<section class="module" id="mod5" data-mod="5">
+  <div class="mod-head"><span class="mod-num">05</span><h2>Metas e poupança</h2></div>
+  <p>Guardar dinheiro não precisa começar com muito. O segredo é a <b>constância</b>: um valor pequeno todo mês vale mais do que um valor grande "quando sobrar" (porque quase nunca sobra).</p>
+  <div class="card">
+    <ul class="simple">
+      <li><b>Reserva de emergência:</b> um dinheiro guardado para imprevistos (uma consulta, um conserto). Comece com uma meta pequena e vá aumentando.</li>
+      <li><b>Metas com prazo:</b> "quero guardar X até dezembro" funciona muito melhor do que "quero guardar mais".</li>
+      <li><b>Automatize:</b> se possível, transfira o valor da poupança assim que o salário cair — antes de gastar com outra coisa.</li>
+    </ul>
+    <div class="tip"><span class="eyebrow">Dica do mestre-cervejeiro</span>Todo copo começa vazio e enche aos poucos. Sua reserva é igual: o importante não é o tamanho do primeiro depósito, é não parar de encher.</div>
+  </div>
+  <button class="mark-btn" data-mark="5">Marcar módulo como concluído</button>
+</section>
+
+<section class="module" id="mod6" data-mod="6">
+  <div class="mod-head"><span class="mod-num">06</span><h2>Apostas online (Bets): jogo de azar, não plano financeiro</h2></div>
+  <p>Apostas esportivas e "Bets" viraram parte do dia a dia de muita gente — mas é importante ter clareza sobre o que isso é: <b>jogo de azar</b>. Não é investimento, não é renda extra, não é estratégia financeira.</p>
+  <div class="card">
+    <ul class="simple">
+      <li>O resultado depende de sorte/probabilidade, não de esforço ou conhecimento — mesmo quem "entende de futebol" perde na maioria das vezes no longo prazo.</li>
+      <li>As casas de apostas são desenhadas para o apostador perder mais do que ganha ao longo do tempo — é assim que elas existem e lucram.</li>
+      <li><b>Nunca comprometa seu salário com apostas.</b> Dinheiro do aluguel, do mercado, das contas ou de qualquer dívida não pode virar aposta — perder isso compromete o básico do mês inteiro, e é muito mais fácil perder do que ganhar.</li>
+      <li>Apostar não é um hábito seguro de se ter, mesmo em pequenas quantias — é uma atividade que vicia e que estruturalmente tende a tirar dinheiro de quem joga, não a somar.</li>
+    </ul>
+    <div class="tip"><span class="eyebrow">Sinal de alerta</span>Se você já apostou querendo "recuperar o prejuízo", pediu dinheiro emprestado para apostar, ou apostar está te tirando o sono, é hora de parar e procurar ajuda — não é fraqueza, é cuidado com você mesmo.</div>
+    <div class="help-box">
+      <span class="eyebrow">Se você perdeu o controle, recorra a isso</span>
+      O Governo Federal tem uma ferramenta gratuita e oficial para isso: a <a href="https://www.gov.br/autoexclusaoapostas" target="_blank" rel="noopener">Plataforma Centralizada de Autoexclusão</a> (gov.br/autoexclusaoapostas).
+      <ul>
+        <li>Bloqueia seu CPF de uma vez em todas as casas de apostas licenciadas no Brasil — sem precisar pedir site por site.</li>
+        <li>Impede novos cadastros e para de mandar propaganda de apostas pra você.</li>
+        <li>Você escolhe o prazo (de 1 a 12 meses, ou por tempo indeterminado).</li>
+        <li>É 100% digital, gratuito, leva poucos minutos — só entrar com sua conta gov.br (nível prata ou ouro).</li>
+        <li>A própria plataforma também mostra pontos de atendimento do SUS para quem quiser apoio de saúde mental.</li>
+      </ul>
+    </div>
+  </div>
+  <button class="mark-btn" data-mark="6">Marcar módulo como concluído</button>
+</section>
+
+<section class="module" id="quiz">
+  <div class="mod-head"><span class="mod-num">07</span><h2>Avaliação final</h2></div>
+  <p>Responda as perguntas abaixo. Você precisa acertar pelo menos <span id="notaMinimaLabel">9 de 13</span> para liberar o certificado.</p>
+  <div class="card" id="quizCard"></div>
+  <button id="submitQuiz">Enviar respostas</button>
+  <button id="resetQuiz" style="display:none;">Tentar novamente</button>
+  <div id="quizResult"></div>
+</section>
+
+<section class="module" id="certSection">
+  <div class="mod-head"><span class="mod-num">08</span><h2>Seu certificado</h2></div>
+  <p>Parabéns por completar o curso! Digite seu nome completo como deve aparecer no certificado.</p>
+  <div class="cert-form">
+    <input type="text" id="certName" placeholder="Nome completo">
+    <select id="certUnit">
+      <option value="">Selecione sua unidade</option>
+      <option>Gávea</option>
+      <option>Terraço</option>
+      <option>Tijuca</option>
+      <option>Rosas</option>
+      <option>Leblon</option>
+      <option>Laranjeiras</option>
+      <option>Morro da Urca</option>
+      <option>Cervejaria</option>
+      <option>Onze Copos Participações</option>
+    </select>
+    <button id="genCert">Gerar certificado</button>
+  </div>
+
+  <div class="tip" style="margin-bottom:24px;">
+    <span class="eyebrow">Confidencial</span>
+    <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; margin-top:6px;">
+      <input type="checkbox" id="pedidoAjudaCheck" style="margin-top:3px;">
+      <span>Estou passando por dificuldades financeiras e gostaria de receber orientação. (Marcar esta opção não aparece no seu certificado — é só um sinal interno para a GGC entrar em contato com você, se você quiser.)</span>
+    </label>
+  </div>
+
+  <div id="certificate">
+    <div class="cert-eyebrow">Universidade Corporativa Brewteco</div>
+    <div class="cert-title">Certificado de Conclusão</div>
+    <div class="cert-sub">Grupo Onze Copos</div>
+    <div class="cert-name" id="certNameOut">Nome do Colaborador</div>
+    <div class="cert-body">Certificamos que <span id="certNameOut2">o(a) colaborador(a)</span> concluiu com aproveitamento o curso <b>"Copo Cheio: Educação Financeira Brewteco"</b>, promovido pela área de Gente, Gestão &amp; Cultura (GGC).</div>
+    <div class="cert-foot">
+      <div>
+        CPF: <span id="certCPFOut">—</span><br>
+        Unidade: <span id="certUnitOut">—</span><br>
+        Emitido em <span id="certDate"></span><br>
+        Nota final: <span id="certScore"></span>
+      </div>
+      <div class="cert-seal">GGC<br>Brewteco</div>
+      <div style="text-align:right;">
+        Fred Moussallem<br>Head de Gente, Gestão &amp; Cultura
+      </div>
+    </div>
+  </div>
+  <button id="downloadBtn" style="display:none;">Baixar certificado (PNG)</button>
+</section>
+
+<section class="module" id="toolSection">
+  <div class="mod-head"><span class="mod-num">09</span><h2>Sua planilha de controle</h2></div>
+  <p class="tool-intro">Use direto aqui, no navegador do celular — não precisa ter Excel instalado. Preencha os valores, o resumo é calculado na hora. No final, você pode salvar como imagem ou baixar a versão completa em Excel, se preferir.</p>
+
+  <div class="card">
+    <div class="renda-row">
+      <label for="rendaInput">Renda mensal líquida</label>
+      <input class="tool-input" type="number" id="rendaInput" placeholder="R$" value="2500">
+    </div>
+
+    <div id="catRows"></div>
+
+    <div class="summary-grid" id="summaryGrid"></div>
+    <div class="tip" id="sobraBox" style="margin-top:18px;"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="font-size:1.1rem; margin-bottom:14px;">Metas de poupança</h3>
+    <div id="goalRows"></div>
+  </div>
+
+  <div class="tool-actions">
+    <button class="tool-btn primary" id="exportImgBtn">Salvar resumo (imagem)</button>
+    <button class="tool-btn secondary" id="exportXlsxBtn">Baixar planilha completa (Excel)</button>
+    <button class="tool-btn secondary" id="exportJsonBtn">💾 Baixar meus dados</button>
+    <label class="tool-btn secondary" for="importJsonInput" style="cursor:pointer;">📂 Importar dados</label>
+    <input type="file" id="importJsonInput" accept="application/json" style="display:none;">
+  </div>
+</section>
+
+</div>
+
+</main>
+
+<footer>Brewteco · Grupo Onze Copos — Entregar Experiências com Alma</footer>
+
+<script>
+const modules = [1,2,3,4,5,6];
+const completed = new Set();
+
+const dotsEl = document.getElementById('dots');
+function buildDots(){
+  dotsEl.innerHTML = '';
+  const items = [
+    {id:'mod1', label:'1. Por quê'},
+    {id:'mod2', label:'2. Necessidade x Desejo'},
+    {id:'mod3', label:'3. Orçamento'},
+    {id:'mod4', label:'4. Juros'},
+    {id:'mod5', label:'5. Poupança'},
+    {id:'mod6', label:'6. Apostas/Bets'},
+    {id:'quiz', label:'7. Avaliação'},
+    {id:'certSection', label:'8. Certificado'},
+    {id:'toolSection', label:'9. Minha Planilha'}
+  ];
+  items.forEach(it=>{
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.textContent = it.label;
+    d.onclick = ()=>document.getElementById(it.id).scrollIntoView({behavior:'smooth'});
+    d.dataset.target = it.id;
+    dotsEl.appendChild(d);
+  });
+}
+buildDots();
+
+function updateGlass(){
+  const pct = Math.round((completed.size / modules.length) * 100);
+  document.getElementById('glassPct').textContent = pct + '%';
+  const fill = document.getElementById('glassFill');
+  const foam = document.getElementById('glassFoam');
+  const totalHeight = 128; // usable glass height
+  const h = (pct/100) * totalHeight;
+  fill.setAttribute('y', 150 - h);
+  fill.setAttribute('height', h);
+  foam.setAttribute('y', 150 - h - 4);
+}
+
+document.querySelectorAll('.mark-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const n = btn.dataset.mark;
+    completed.add(n);
+    btn.textContent = 'Módulo concluído ✓';
+    btn.classList.add('done');
+    updateGlass();
+  });
+});
+
+// ---------------- QUIZ ----------------
+const questions = [
+  {
+    q:"O que é um orçamento pessoal?",
+    opts:["Um empréstimo bancário","Um registro do que entra e sai do seu dinheiro","Um tipo de investimento","Um imposto sobre o salário"],
+    correct:1
+  },
+  {
+    q:"Qual das opções abaixo é uma NECESSIDADE, e não um desejo?",
+    opts:["Trocar de celular ainda funcionando","Pedir delivery todo dia","Pagar o aluguel","Comprar roupa nova sem precisar"],
+    correct:2
+  },
+  {
+    q:"Se você gasta tudo que ganha, sem sobrar nada, o que costuma acontecer?",
+    opts:["Você automaticamente enriquece","Fica sem margem para imprevistos e pode recorrer a dívidas","Seu salário aumenta","Nada muda"],
+    correct:1
+  },
+  {
+    q:"O que são juros?",
+    opts:["Um desconto por pagar à vista","O valor cobrado por usar dinheiro emprestado","Um imposto do governo","Um tipo de poupança"],
+    correct:1
+  },
+  {
+    q:"Por que evitar deixar o cartão de crédito no rotativo ou usar o cheque especial por muito tempo?",
+    opts:["Porque eles têm os juros mais baixos do mercado","Porque são proibidos por lei","Porque têm juros muito altos e a dívida cresce rápido","Porque bloqueiam o salário automaticamente"],
+    correct:2
+  },
+  {
+    q:"O que é a reserva de emergência?",
+    opts:["Um dinheiro guardado para imprevistos","Um empréstimo consignado","Um bônus da empresa","O saldo do cartão de crédito"],
+    correct:0
+  },
+  {
+    q:"Na regra 50/30/20, os 20% representam:",
+    opts:["Gastos com lazer","Contas essenciais","Reserva e objetivos financeiros","Impostos"],
+    correct:2
+  },
+  {
+    q:"Antes de comprar algo parcelado, o que você deve sempre verificar?",
+    opts:["Só o valor da parcela","O valor total com os juros embutidos","A cor do produto","Se a loja aceita PIX"],
+    correct:1
+  },
+  {
+    q:"Qual é uma boa forma de começar a poupar, mesmo com pouco dinheiro?",
+    opts:["Esperar sobrar dinheiro no fim do mês","Guardar um valor fixo, mesmo pequeno, assim que o salário cair","Só poupar quando ganhar um aumento","Não guardar nada até quitar todas as dívidas"],
+    correct:1
+  },
+  {
+    q:"Antes de contratar um empréstimo consignado, o que é importante avaliar?",
+    opts:["Apenas o nome do banco","Se a parcela ainda deixa espaço para as contas essenciais do mês","Se os colegas de trabalho também têm consignado","Nenhuma avaliação é necessária"],
+    correct:1
+  },
+  {
+    q:"Apostas online (Bets) devem ser tratadas como:",
+    opts:["Uma forma de investimento e renda extra","Um jogo de azar, sem garantia nenhuma de ganho","Uma estratégia financeira segura para quem entende de futebol","Uma forma de pagar dívidas mais rápido"],
+    correct:1
+  },
+  {
+    q:"Qual é a atitude mais segura em relação a apostas online (Bets)?",
+    opts:["Definir um valor fixo por mês e tentar recuperar sempre que perder","Nunca comprometer o salário, as contas ou a reserva com apostas","Apostar mais depois de uma perda, para recuperar o prejuízo","Apostar o que sobrar no fim do mês, sem se preocupar com limite"],
+    correct:1
+  },
+  {
+    q:"Se você sentir que perdeu o controle sobre as apostas, o que pode fazer?",
+    opts:["Nada, não existe nenhum recurso oficial para isso","Usar a Plataforma Centralizada de Autoexclusão do governo (gov.br/autoexclusaoapostas) para bloquear seu CPF em todas as casas de apostas licenciadas","Trocar de casa de apostas para uma que ainda não te bloqueou","Aumentar o valor das apostas até conseguir recuperar o prejuízo"],
+    correct:1
+  }
+];
+
+const quizCard = document.getElementById('quizCard');
+questions.forEach((item, i)=>{
+  const block = document.createElement('div');
+  block.className='q-block';
+  block.dataset.index=i;
+  block.innerHTML = `<div class="q-title">${i+1}. ${item.q}</div>` +
+    item.opts.map((opt,j)=>`
+      <label class="opt" data-q="${i}" data-opt="${j}">
+        <input type="radio" name="q${i}" value="${j}"> <span>${opt}</span>
+      </label>`).join('');
+  quizCard.appendChild(block);
+});
+
+quizCard.addEventListener('click', (e)=>{
+  const label = e.target.closest('.opt');
+  if(!label) return;
+  const q = label.dataset.q;
+  document.querySelectorAll(`.opt[data-q="${q}"]`).forEach(o=>o.classList.remove('selected'));
+  label.classList.add('selected');
+  label.querySelector('input').checked = true;
+});
+
+let finalScore = 0;
+document.getElementById('submitQuiz').addEventListener('click', ()=>{
+  let correctCount = 0;
+  let unanswered = 0;
+  questions.forEach((item,i)=>{
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    const opts = document.querySelectorAll(`.opt[data-q="${i}"]`);
+    if(!selected){ unanswered++; }
+    opts.forEach(o=>{
+      const optIndex = parseInt(o.dataset.opt);
+      if(optIndex === item.correct) o.classList.add('correct');
+      else if(selected && parseInt(selected.value) === optIndex) o.classList.add('incorrect');
+    });
+    if(selected && parseInt(selected.value) === item.correct) correctCount++;
+  });
+
+  if(unanswered > 0){
+    alert('Responda todas as perguntas antes de enviar. Faltam ' + unanswered + '.');
+    document.querySelectorAll('.opt.correct, .opt.incorrect').forEach(o=>o.classList.remove('correct','incorrect'));
+    return;
+  }
+
+  finalScore = correctCount;
+  const resultEl = document.getElementById('quizResult');
+  resultEl.style.display = 'block';
+  const totalQ = questions.length;
+  const passed = correctCount >= 9;
+  resultEl.className = passed ? 'pass' : 'fail';
+  resultEl.textContent = passed
+    ? `Você acertou ${correctCount}/${totalQ}. Aprovado! Role para baixo para gerar seu certificado.`
+    : `Você acertou ${correctCount}/${totalQ}. É preciso acertar pelo menos 9 para aprovação. Revise os módulos e tente novamente.`;
+
+  document.getElementById('submitQuiz').style.display='none';
+  document.getElementById('resetQuiz').style.display='inline-block';
+
+  if(passed){
+    document.getElementById('certSection').style.display='block';
+    document.getElementById('toolSection').style.display='block';
+    registrarEvento('Conclusão', {nota: correctCount + "/" + questions.length});
+  }
+});
+
+document.getElementById('resetQuiz').addEventListener('click', ()=>{
+  document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected','correct','incorrect'));
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('submitQuiz').style.display='inline-block';
+  document.getElementById('resetQuiz').style.display='none';
+  document.getElementById('certSection').style.display='none';
+  document.getElementById('toolSection').style.display='none';
+});
+
+// ---------------- CONFIG DE REGISTRO (opcional) ----------------
+// Cole aqui a URL do webhook (ex: Make.com) que recebe os dados e grava numa planilha.
+// Deixe em branco ("") se ainda não tiver configurado — o curso funciona
+// normalmente, só não fica registrado em nenhum lugar central.
+const REGISTRO_WEBHOOK_URL = "";
+
+let userName = "";
+let userUnit = "";
+let userCPF = "";
+
+// Validação de CPF (algoritmo oficial de dígitos verificadores)
+function cpfValido(cpf){
+  cpf = cpf.replace(/\D/g, '');
+  if(cpf.length !== 11) return false;
+  if(/^(\d)\1{10}$/.test(cpf)) return false; // todos os dígitos iguais
+  let soma = 0;
+  for(let i = 0; i < 9; i++) soma += parseInt(cpf[i]) * (10 - i);
+  let resto = (soma * 10) % 11;
+  if(resto === 10 || resto === 11) resto = 0;
+  if(resto !== parseInt(cpf[9])) return false;
+  soma = 0;
+  for(let i = 0; i < 10; i++) soma += parseInt(cpf[i]) * (11 - i);
+  resto = (soma * 10) % 11;
+  if(resto === 10 || resto === 11) resto = 0;
+  if(resto !== parseInt(cpf[10])) return false;
+  return true;
+}
+function formatarCPF(cpf){
+  cpf = cpf.replace(/\D/g, '');
+  return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+}
+
+function registrarEvento(evento, extra){
+  extra = extra || {};
+  if(!REGISTRO_WEBHOOK_URL) return;
+  const payload = Object.assign({
+    curso: "Copo Cheio - Educação Financeira Brewteco",
+    evento: evento,
+    nome: userName,
+    cpf: userCPF,
+    unidade: userUnit,
+    data: new Date().toLocaleDateString('pt-BR'),
+    hora: new Date().toLocaleTimeString('pt-BR'),
+    timestamp_iso: new Date().toISOString()
+  }, extra);
+  fetch(REGISTRO_WEBHOOK_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).catch(()=>{ /* silencioso: não bloqueia o uso do curso */ });
+}
+
+// ---------------- IDENTIFICAÇÃO (início do curso) ----------------
+document.getElementById('startCourseBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('gateName').value.trim();
+  const cpfRaw = document.getElementById('gateCPF').value;
+  const unit = document.getElementById('gateUnit').value;
+  if(!name){ alert('Digite seu nome completo.'); return; }
+  if(!cpfValido(cpfRaw)){ alert('Digite um CPF válido.'); return; }
+  if(!unit){ alert('Selecione sua unidade.'); return; }
+  userName = name;
+  userCPF = formatarCPF(cpfRaw);
+  userUnit = unit;
+  document.getElementById('idGate').style.display = 'none';
+  document.getElementById('courseContent').style.display = 'block';
+  // pré-preenche o certificado com os mesmos dados (ainda editável)
+  document.getElementById('certName').value = userName;
+  document.getElementById('certUnit').value = userUnit;
+  registrarEvento('Acesso');
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+// ---------------- CERTIFICATE ----------------
+document.getElementById('genCert').addEventListener('click', ()=>{
+  const name = document.getElementById('certName').value.trim();
+  const unit = document.getElementById('certUnit').value;
+  if(!name){ alert('Digite seu nome completo.'); return; }
+  if(!unit){ alert('Selecione sua unidade.'); return; }
+  document.getElementById('certNameOut').textContent = name;
+  document.getElementById('certNameOut2').textContent = name;
+  document.getElementById('certUnitOut').textContent = unit;
+  document.getElementById('certCPFOut').textContent = userCPF || '—';
+  document.getElementById('certScore').textContent = finalScore + '/' + questions.length;
+  const today = new Date();
+  const dataFormatada = today.toLocaleDateString('pt-BR');
+  document.getElementById('certDate').textContent = dataFormatada;
+  document.getElementById('certificate').style.display='block';
+  document.getElementById('downloadBtn').style.display='inline-block';
+  document.getElementById('certificate').scrollIntoView({behavior:'smooth'});
+
+  const pedeAjuda = document.getElementById('pedidoAjudaCheck').checked;
+
+  registrarEvento('Certificado Emitido', {
+    nome: name,
+    unidade: unit,
+    nota: finalScore + "/" + questions.length,
+    data_conclusao: dataFormatada,
+    pediu_ajuda_financeira: pedeAjuda
+  });
+
+  if(pedeAjuda){
+    registrarEvento('Pedido de Ajuda Financeira', {
+      nome: name,
+      unidade: unit
+    });
+  }
+});
+
+document.getElementById('downloadBtn').addEventListener('click', ()=>{
+  const cert = document.getElementById('certificate');
+  html2canvas(cert, {backgroundColor:'#FBF3E7', scale:2}).then(canvas=>{
+    const link = document.createElement('a');
+    const name = document.getElementById('certName').value.trim().replace(/\s+/g,'_') || 'colaborador';
+    link.download = `certificado_educacao_financeira_${name}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+});
+
+const XLSX_BASE64 = "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";
+
+// ---------------- PLANILHA INTERATIVA (sem Excel) ----------------
+const categoriasTool = [
+  {nome:"Aluguel/Financiamento", tipo:"necessidade"},
+  {nome:"Mercado/Alimentação", tipo:"necessidade"},
+  {nome:"Transporte", tipo:"necessidade"},
+  {nome:"Contas (água, luz, internet, celular)", tipo:"necessidade"},
+  {nome:"Saúde", tipo:"necessidade"},
+  {nome:"Pagamento de dívidas/parcelas", tipo:"necessidade"},
+  {nome:"Lazer/Delivery", tipo:"desejo"},
+  {nome:"Compras pessoais/roupas", tipo:"desejo"},
+  {nome:"Assinaturas (streaming, apps)", tipo:"desejo"},
+  {nome:"Reserva de emergência", tipo:"reserva"},
+  {nome:"Poupança/Investimento", tipo:"reserva"},
+];
+const tipoLabel = {necessidade:"Necessidade", desejo:"Desejo", reserva:"Reserva"};
+
+const catRowsEl = document.getElementById('catRows');
+categoriasTool.forEach((cat, i)=>{
+  const row = document.createElement('div');
+  row.className = 'row-cat';
+  row.innerHTML = `
+    <span class="cat-name">${cat.nome}</span>
+    <span class="badge ${cat.tipo}">${tipoLabel[cat.tipo]}</span>
+    <input class="tool-input cat-valor" type="number" data-tipo="${cat.tipo}" placeholder="R$" value="0">
+  `;
+  catRowsEl.appendChild(row);
+});
+
+function recalcTool(){
+  const renda = parseFloat(document.getElementById('rendaInput').value) || 0;
+  const totals = {necessidade:0, desejo:0, reserva:0};
+  document.querySelectorAll('.cat-valor').forEach(inp=>{
+    const tipo = inp.dataset.tipo;
+    const val = parseFloat(inp.value) || 0;
+    totals[tipo] += val;
+  });
+  const metas = {necessidade:0.5, desejo:0.3, reserva:0.2};
+  const grid = document.getElementById('summaryGrid');
+  grid.innerHTML = '';
+  const totalGeral = totals.necessidade + totals.desejo + totals.reserva;
+  Object.keys(totals).forEach(tipo=>{
+    const pct = renda > 0 ? (totals[tipo]/renda) : 0;
+    const dentroMeta = pct <= metas[tipo] + 0.05;
+    const box = document.createElement('div');
+    box.className = 'summary-box ' + (dentroMeta ? 'ok' : 'over');
+    box.innerHTML = `
+      <div class="val">R$ ${totals[tipo].toFixed(0)}</div>
+      <div class="lbl">${tipoLabel[tipo]} · ${(pct*100).toFixed(0)}% (meta ${(metas[tipo]*100).toFixed(0)}%)</div>
+    `;
+    grid.appendChild(box);
+  });
+  const sobra = renda - totalGeral;
+  const sobraBox = document.getElementById('sobraBox');
+  sobraBox.innerHTML = `<span class="eyebrow">Sobra/falta no mês</span>R$ ${sobra.toFixed(2)} ${sobra >= 0 ? '(sobrando)' : '(faltando — revise seus gastos)'}`;
+}
+document.getElementById('rendaInput').addEventListener('input', recalcTool);
+catRowsEl.addEventListener('input', recalcTool);
+
+// ---- Metas de poupança (interativo) ----
+const goalRowsEl = document.getElementById('goalRows');
+const goalDefaults = ["Reserva de emergência", "Viagem/Objetivo pessoal", "Quitar dívida/cartão"];
+goalDefaults.forEach((nome, i)=>{
+  const row = document.createElement('div');
+  row.className = 'goal-card';
+  row.dataset.idx = i;
+  row.innerHTML = `
+    <div><label>Meta</label><input class="tool-input goal-nome" type="text" value="${nome}"></div>
+    <div><label>Valor objetivo (R$)</label><input class="tool-input goal-valor" type="number" placeholder="0"></div>
+    <div><label>Data objetivo</label><input class="tool-input goal-data" type="date"></div>
+    <div><label>Já guardado (R$)</label><input class="tool-input goal-guardado" type="number" placeholder="0"></div>
+    <div class="goal-result">Preencha os campos acima para calcular.</div>
+  `;
+  goalRowsEl.appendChild(row);
+});
+
+function recalcGoals(){
+  document.querySelectorAll('.goal-card').forEach(card=>{
+    const valor = parseFloat(card.querySelector('.goal-valor').value) || 0;
+    const guardado = parseFloat(card.querySelector('.goal-guardado').value) || 0;
+    const dataStr = card.querySelector('.goal-data').value;
+    const resultEl = card.querySelector('.goal-result');
+    const falta = Math.max(valor - guardado, 0);
+    if(!dataStr || valor <= 0){
+      resultEl.textContent = 'Preencha valor objetivo e data para calcular.';
+      return;
+    }
+    const hoje = new Date();
+    const alvo = new Date(dataStr);
+    let meses = (alvo.getFullYear() - hoje.getFullYear()) * 12 + (alvo.getMonth() - hoje.getMonth());
+    meses = Math.max(meses, 1);
+    const porMes = falta / meses;
+    resultEl.textContent = `Falta R$ ${falta.toFixed(2)} · ${meses} meses restantes · guardar R$ ${porMes.toFixed(2)}/mês`;
+  });
+}
+goalRowsEl.addEventListener('input', recalcGoals);
+
+recalcTool();
+recalcGoals();
+
+// ---- Exportar resumo como imagem ----
+document.getElementById('exportImgBtn').addEventListener('click', ()=>{
+  const el = document.getElementById('toolSection');
+  html2canvas(el, {backgroundColor:'#1B140F', scale:2}).then(canvas=>{
+    const link = document.createElement('a');
+    link.download = 'meu_controle_financeiro.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+});
+
+// ---- Baixar planilha completa em Excel (arquivo já embutido, funciona offline) ----
+document.getElementById('exportXlsxBtn').addEventListener('click', ()=>{
+  const byteChars = atob(XLSX_BASE64);
+  const byteNumbers = new Array(byteChars.length);
+  for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'controle_financeiro_brewteco.xlsx';
+  link.click();
+  URL.revokeObjectURL(link.href);
+});
+
+// ---- Baixar meus dados da calculadora (JSON) ----
+document.getElementById('exportJsonBtn').addEventListener('click', ()=>{
+  const dados = {
+    nome: userName,
+    unidade: userUnit,
+    renda: document.getElementById('rendaInput').value,
+    categorias: Array.from(document.querySelectorAll('.cat-valor')).map(inp => inp.value),
+    metas: Array.from(document.querySelectorAll('.goal-card')).map(card => ({
+      nome: card.querySelector('.goal-nome').value,
+      valor: card.querySelector('.goal-valor').value,
+      data: card.querySelector('.goal-data').value,
+      guardado: card.querySelector('.goal-guardado').value
+    })),
+    salvo_em: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(dados, null, 2)], {type:'application/json'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'meus_dados_financeiros.json';
+  link.click();
+  URL.revokeObjectURL(link.href);
+});
+
+// ---- Importar dados salvos anteriormente (JSON) ----
+document.getElementById('importJsonInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt)=>{
+    try{
+      const dados = JSON.parse(evt.target.result);
+      if(dados.renda !== undefined) document.getElementById('rendaInput').value = dados.renda;
+      const catInputs = document.querySelectorAll('.cat-valor');
+      (dados.categorias || []).forEach((val, i)=>{ if(catInputs[i]) catInputs[i].value = val; });
+      const goalCards = document.querySelectorAll('.goal-card');
+      (dados.metas || []).forEach((meta, i)=>{
+        if(!goalCards[i]) return;
+        goalCards[i].querySelector('.goal-nome').value = meta.nome || '';
+        goalCards[i].querySelector('.goal-valor').value = meta.valor || '';
+        goalCards[i].querySelector('.goal-data').value = meta.data || '';
+        goalCards[i].querySelector('.goal-guardado').value = meta.guardado || '';
+      });
+      recalcTool();
+      recalcGoals();
+      alert('Dados importados com sucesso!');
+    }catch(err){
+      alert('Não foi possível ler esse arquivo. Verifique se é o JSON exportado por esta ferramenta.');
+    }
+  };
+  reader.readAsText(file);
+});
+
+updateGlass();
+</script>
+</body>
+</html>
